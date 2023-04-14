@@ -1,0 +1,87 @@
+---
+title: "nhanes"
+author: "Le Thanh Nguyen"
+date: "2023-04-05"
+output: html_document
+---
+
+```{r "basic_packages" }
+pacman::p_load(psych, xray , ggplot2, texreg, DT, excelR, plotly, wrapr, sjmisc, sjlabelled, sjstats, sjPlot, dplyr, forcats,  knitr, kableExtra, captioner, tidyverse, magick, stringr, Rmisc, gridExtra, bookdown, ggthemes)
+```   
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- read.csv( url( "https://raw.githubusercontent.com/thanhnguyen3849/colon_s_personal/main/NHANES_data_04mar20.csv") )
+df <- data.frame(df)
+str(df)
+```
+
+```{r}
+dfprop.test1 <- df[, c("AlcoholYear", "Diabetes")]
+dfprop.test.1.clean <- drop_na(dfprop.test1)
+
+frq(dfprop.test.1.clean$AlcoholYear)
+
+dfprop.test.1.clean$AlcoholCategory <- cut(dfprop.test.1.clean$AlcoholYear, breaks=c(90, 180, 270, 360, Inf), labels=c("3m", "6m", "9m", "1 year"))
+
+frq(dfprop.test.1.clean$AlcoholCategory)
+
+#visualiza the data
+tab_xtab(dfprop.test.1.clean$AlcoholCategory, dfprop.test.1.clean$Diabetes, show.col.prc = T)
+
+#proportional test
+prop.test(x=c(5.4, 6.4), n=c(92, 8), 
+          alternative="two.sided", conf.level=.95)
+```
+
+```{r}
+df.new <- df[c("Age", "Weight", "Gender","HealthGen", "AgeDecade")] %>% drop_na() %>% sample_n(500, replace = FALSE)
+
+
+library(ggplot2)
+library(forcats)
+library(tidyr)
+
+library(ggthemes)
+ggplot(df.new, aes(x = Weight, y = Age, color = Gender)) + geom_point(size=2) + theme_few() + scale_color_few()
+```
+
+
+```{r}
+ggplot(df.new, aes(x = Weight, y = Age, color = HealthGen)) +
+  geom_point(shape = 19, size = 2, alpha = 0.9) +
+  theme_few() +
+  scale_color_tableau("Jewel Bright")
+
+ggplot(df.new, aes(x = Weight, y = Age, color = HealthGen)) +
+  geom_point(shape = 19, size = 2, alpha = 0.9) +
+  theme_few() +
+  scale_color_manual(values = my.palette)
+```
+```{r}
+
+my.palette <- c("#2C3531", "#116466", "#D9B08C", "#FFCB9A", "#D1E8E2")
+
+ggplot(df.new, aes(x = Weight, fill = HealthGen)) +
+  geom_boxplot() +
+  theme_few() +
+  scale_fill_tableau("Jewel Bright")
+
+ggplot(df.new, aes(x = Weight, fill = HealthGen)) +
+  geom_boxplot() +
+  theme_few() +
+  scale_fill_manual(values = my.palette)
+```
+
+```{r}
+ggplot(df.new, aes(x = HealthGen, fill = HealthGen)) +
+  geom_bar(position = "dodge") +
+  theme_few() +
+  scale_fill_manual(values = my.palette)
+```
+
+
+
