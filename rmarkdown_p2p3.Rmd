@@ -20,24 +20,6 @@ str(df)
 ```
 
 ```{r}
-dfprop.test1 <- df[, c("AlcoholYear", "Diabetes")]
-dfprop.test.1.clean <- drop_na(dfprop.test1)
-
-frq(dfprop.test.1.clean$AlcoholYear)
-
-dfprop.test.1.clean$AlcoholCategory <- cut(dfprop.test.1.clean$AlcoholYear, breaks=c(90, 180, 270, 360, Inf), labels=c("3m", "6m", "9m", "1 year"))
-
-frq(dfprop.test.1.clean$AlcoholCategory)
-
-#visualiza the data
-tab_xtab(dfprop.test.1.clean$AlcoholCategory, dfprop.test.1.clean$Diabetes, show.col.prc = T)
-
-#proportional test
-prop.test(x=c(5.4, 6.4), n=c(92, 8), 
-          alternative="two.sided", conf.level=.95)
-```
-
-```{r}
 df.new <- df[c("Age", "Weight", "Gender","HealthGen", "AgeDecade")] %>% drop_na() %>% sample_n(500, replace = FALSE)
 
 
